@@ -21,6 +21,8 @@ pygame.display.set_icon(icon)
 player = pygame.image.load("frog-player.png")
 playerX = 64
 playerY = 600
+player_changeX = 0
+player_changeY = 0
 
 
 def player_moves(x, y):
@@ -40,6 +42,9 @@ while running:
             running = False
 
     # Player movements
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_UP:
+            print("HALOOOO")
 
     player_moves(playerX, playerY)
     pygame.display.update()

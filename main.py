@@ -44,7 +44,10 @@ while running:
     # Player movements
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_UP:
-            print("HALOOOO")
-
+            print("UUUPP")
+        if event.key == pygame.K_LEFT:
+            print("LEFT")
+        if event.key == pygame.K_RIGHT:
+            print("RIGHT")
     player_moves(playerX, playerY)
     pygame.display.update()

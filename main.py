@@ -21,8 +21,6 @@ pygame.display.set_icon(icon)
 player = pygame.image.load("frog-player.png")
 playerX = 64
 playerY = 600
-player_changeX = 0
-player_changeY = 0
 
 
 def player_moves(x, y):
@@ -48,6 +46,10 @@ while running:
 
     # Player movements
     keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        playerX -= vel
+    if keys[pygame.K_RIGHT]:
+        playerX += vel
     if not (isJump):
         if keys[pygame.K_UP]:
             isJump = True
@@ -62,17 +64,7 @@ while running:
             isJump = False
             jumpCount = 10
 
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
-            player_changeX -= 1
-        elif event.key == pygame.K_RIGHT:
-            player_changeX += 1
-    if event.type == pygame.KEYUP:
-        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-            player_changeX = 0
-
     # Player boundries
-    playerX += player_changeX
     if playerX <= 0:
         playerX = 0
     elif playerX >= 936:

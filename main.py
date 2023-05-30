@@ -29,6 +29,11 @@ def player_moves(x, y):
     wn.blit(player, (x, y))
 
 
+# Jump player
+isJump = False
+jumpCount = 10
+vel = 5
+
 # Game running
 running = True
 
@@ -42,12 +47,36 @@ while running:
             running = False
 
     # Player movements
+    keys = pygame.key.get_pressed()
+    if not (isJump):
+        if keys[pygame.K_UP]:
+            isJump = True
+    else:
+        if jumpCount >= -10:
+            neg = 1
+            if jumpCount < 0:
+                neg = -1
+            playerY -= (jumpCount**2) * 0.5 * neg
+            jumpCount -= 1
+        else:
+            isJump = False
+            jumpCount = 10
+
     if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_UP:
-            print("UUUPP")
         if event.key == pygame.K_LEFT:
-            print("LEFT")
-        if event.key == pygame.K_RIGHT:
-            print("RIGHT")
+            player_changeX -= 1
+        elif event.key == pygame.K_RIGHT:
+            player_changeX += 1
+    if event.type == pygame.KEYUP:
+        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            player_changeX = 0
+
+    # Player boundries
+    playerX += player_changeX
+    if playerX <= 0:
+        playerX = 0
+    elif playerX >= 936:
+        playerX = 936
+
     player_moves(playerX, playerY)
     pygame.display.update()

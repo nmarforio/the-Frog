@@ -45,6 +45,18 @@ def branch1(x, y):
     wn.blit(branch, (x, y))
 
 
+def collisionBranch1(branch1X, branch1Y, playerX, playerY):
+    distance = math.sqrt(
+        (math.pow(branch1X - playerX, 2)) + (math.pow(branch1Y - playerY, 2))
+    )
+
+    if distance < 27:
+        playerX = branch1X
+        return True
+    else:
+        return False
+
+
 # branch2: Y 200-350
 branch2X = random.randint(0, 1000)
 branch2Y = random.randint(200, 350)
@@ -54,6 +66,19 @@ branch2Y_change = 40
 
 def branch2(x, y):
     wn.blit(branch, (x, y))
+
+
+# Collision on the branch
+def collisionBranch2(branch2X, branch2Y, playerX, playerY):
+    distance = math.sqrt(
+        (math.pow(branch2X - playerX, 2)) + (math.pow(branch2Y - playerY, 2))
+    )
+
+    if distance < 27:
+        playerX = branch2X
+        return True
+    else:
+        return False
 
 
 # branch3: Y 400-550
@@ -67,12 +92,14 @@ def branch3(x, y):
     wn.blit(branch, (x, y))
 
 
-# collision & staying on top of the branch
+# collision & staying on branch
 def collisionBranch3(branch3X, branch3Y, playerX, playerY):
     distance = math.sqrt(
         (math.pow(branch3X - playerX, 2)) + (math.pow(branch3Y - playerY, 2))
     )
+
     if distance < 27:
+        playerX = branch3X
         return True
     else:
         return False
@@ -92,22 +119,29 @@ while running:
 
     # Player movements
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] and playerY == 600:
         playerX -= vel
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_RIGHT] and playerY == 600:
         playerX += vel
+    if keys[pygame.K_DOWN]:
+        playerY += vel
     if not (isJump):
         if keys[pygame.K_UP]:
             isJump = True
-    else:
+    elif isJump:
         if jumpCount >= -10:
             neg = 1
             if jumpCount < 0:
                 neg = -1
-            if end_jump:
-                playerX = branch3X
+            if end_jump3:
                 playerY = branch3Y
-
+                jumpCount = 10
+            if end_jump2:
+                playerY = branch2Y
+                jumpCount = 10
+            if end_jump1:
+                playerY = branch1Y
+                jumpCount = 10
             else:
                 playerY -= (jumpCount**2) * 0.5 * neg
                 jumpCount -= 1
@@ -120,6 +154,8 @@ while running:
         playerX = 0
     elif playerX >= 936:
         playerX = 936
+    if playerY >= 600:
+        playerY = 600
 
     # Branch1 bundries & movements
     branch1X += branch1X_change
@@ -167,7 +203,9 @@ while running:
         branch3Y = random.randint(400, 550)
 
     # jump on the Branch
-    end_jump = collisionBranch3(branch3X, branch3Y, playerX, playerY)
+    end_jump3 = collisionBranch3(branch3X, branch3Y, playerX, playerY)
+    end_jump2 = collisionBranch2(branch2X, branch2Y, playerX, playerY)
+    end_jump1 = collisionBranch1(branch1X, branch1Y, playerX, playerY)
 
     player_moves(playerX, playerY)
     branch1(branch1X, branch1Y)

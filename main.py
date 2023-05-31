@@ -17,6 +17,9 @@ caption = pygame.display.set_caption("The Frog")
 icon = pygame.image.load("frog-icon.png")
 pygame.display.set_icon(icon)
 
+# score
+score = 0
+
 
 # Player the Frog
 player = pygame.image.load("frog-player.png")
@@ -42,7 +45,7 @@ num_flies = 6
 
 for i in range(num_flies):
     flies.append(pygame.image.load("fly.png"))
-    fliesX.append(random.randint(0, 1000))
+    fliesX.append(random.randint(32, 968))
     fliesY.append(random.randint(0, 500))
 
 
@@ -58,7 +61,7 @@ num_butterflies = 4
 
 for j in range(num_butterflies):
     butterfly.append(pygame.image.load("butterfly.png"))
-    butterflyX.append(random.randint(0, 1000))
+    butterflyX.append(random.randint(32, 968))
     butterflyY.append(random.randint(0, 500))
 
 
@@ -74,7 +77,7 @@ num_leaves = 8
 
 for h in range(num_leaves):
     leave.append(pygame.image.load("leaves.png"))
-    leaveX.append(random.randint(0, 1000))
+    leaveX.append(random.randint(32, 968))
     leaveY.append(random.randint(0, 500))
 
 
@@ -99,7 +102,6 @@ def collisionBranch1(branch1X, branch1Y, playerX, playerY):
     distance = math.sqrt(
         (math.pow(branch1X - playerX, 2)) + (math.pow(branch1Y - playerY, 2))
     )
-
     if distance < 27:
         return True
     else:
@@ -122,7 +124,6 @@ def collisionBranch2(branch2X, branch2Y, playerX, playerY):
     distance = math.sqrt(
         (math.pow(branch2X - playerX, 2)) + (math.pow(branch2Y - playerY, 2))
     )
-
     if distance < 27:
         return True
     else:
@@ -145,7 +146,19 @@ def collisionBranch3(branch3X, branch3Y, playerX, playerY):
     distance = math.sqrt(
         (math.pow(branch3X - playerX, 2)) + (math.pow(branch3Y - playerY, 2))
     )
+    if distance < 27:
+        return True
+    else:
+        return False
 
+
+# collision with Flies-targets
+
+
+def collisionFlies(fliesX, fliesY, playerX, playerY):
+    distance = math.sqrt(
+        (math.pow(fliesX - playerX, 2)) + (math.pow(fliesY - playerY, 2))
+    )
     if distance < 27:
         return True
     else:
@@ -177,13 +190,13 @@ while running:
             if jumpCount < 0:
                 neg = -1
             if end_jump3:
-                playerY = branch3Y
+                playerY = branch3Y + 10
                 jumpCount = 10
             if end_jump2:
-                playerY = branch2Y
+                playerY = branch2Y + 10
                 jumpCount = 10
             if end_jump1:
-                playerY = branch1Y
+                playerY = branch1Y + 10
                 jumpCount = 10
             else:
                 playerY -= (jumpCount**2) * 0.5 * neg
@@ -265,6 +278,14 @@ while running:
     # leaves loop
     for h in range(num_leaves):
         leave_targets(leaveX[h], leaveY[h], h)
+
+    # collisionTarget
+    fliesCollision = collisionFlies(fliesX[i], fliesY[i], playerX, playerY)
+    if fliesCollision:
+        score += 3
+        fliesX[i] = random.randint(0, 968)
+        fliesY[i] = random.randint(0, 500)
+        print(score)
 
     # function called
     player_moves(playerX, playerY)

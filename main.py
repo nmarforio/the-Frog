@@ -22,6 +22,7 @@ pygame.display.set_icon(icon)
 player = pygame.image.load("frog-player.png")
 playerX = 64
 playerY = 600
+player_changeX = 1
 
 
 def player_moves(x, y):
@@ -32,6 +33,54 @@ def player_moves(x, y):
 isJump = False
 jumpCount = 10
 vel = 5
+
+# targets flies
+flies = []
+fliesX = []
+fliesY = []
+num_flies = 6
+
+for i in range(num_flies):
+    flies.append(pygame.image.load("fly.png"))
+    fliesX.append(random.randint(0, 1000))
+    fliesY.append(random.randint(0, 500))
+
+
+def flies_targets(x, y, i):
+    wn.blit(flies[i], (x, y))
+
+
+# targets butterflies
+butterfly = []
+butterflyX = []
+butterflyY = []
+num_butterflies = 4
+
+for j in range(num_butterflies):
+    butterfly.append(pygame.image.load("butterfly.png"))
+    butterflyX.append(random.randint(0, 1000))
+    butterflyY.append(random.randint(0, 500))
+
+
+def butterflies_targets(x, y, j):
+    wn.blit(butterfly[j], (x, y))
+
+
+# targets leaves
+leave = []
+leaveX = []
+leaveY = []
+num_leaves = 8
+
+for h in range(num_leaves):
+    leave.append(pygame.image.load("leaves.png"))
+    leaveX.append(random.randint(0, 1000))
+    leaveY.append(random.randint(0, 500))
+
+
+def leave_targets(x, y, h):
+    wn.blit(leave[h], (x, y))
+
 
 # branch1: Y 0-150
 branch = pygame.image.load("branch.png")
@@ -45,13 +94,13 @@ def branch1(x, y):
     wn.blit(branch, (x, y))
 
 
+# collision branch1
 def collisionBranch1(branch1X, branch1Y, playerX, playerY):
     distance = math.sqrt(
         (math.pow(branch1X - playerX, 2)) + (math.pow(branch1Y - playerY, 2))
     )
 
     if distance < 27:
-        playerX = branch1X
         return True
     else:
         return False
@@ -68,14 +117,13 @@ def branch2(x, y):
     wn.blit(branch, (x, y))
 
 
-# Collision on the branch
+# Collision branch2
 def collisionBranch2(branch2X, branch2Y, playerX, playerY):
     distance = math.sqrt(
         (math.pow(branch2X - playerX, 2)) + (math.pow(branch2Y - playerY, 2))
     )
 
     if distance < 27:
-        playerX = branch2X
         return True
     else:
         return False
@@ -92,14 +140,13 @@ def branch3(x, y):
     wn.blit(branch, (x, y))
 
 
-# collision & staying on branch
+# collision branch3
 def collisionBranch3(branch3X, branch3Y, playerX, playerY):
     distance = math.sqrt(
         (math.pow(branch3X - playerX, 2)) + (math.pow(branch3Y - playerY, 2))
     )
 
     if distance < 27:
-        playerX = branch3X
         return True
     else:
         return False
@@ -119,10 +166,6 @@ while running:
 
     # Player movements
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and playerY == 600:
-        playerX -= vel
-    if keys[pygame.K_RIGHT] and playerY == 600:
-        playerX += vel
     if keys[pygame.K_DOWN]:
         playerY += vel
     if not (isJump):
@@ -150,10 +193,14 @@ while running:
             jumpCount = 10
 
     # Player boundries
+    playerX += player_changeX
     if playerX <= 0:
-        playerX = 0
-    elif playerX >= 936:
-        playerX = 936
+        player_changeX = 1
+        playerX += player_changeX
+    if playerX >= 936:
+        player_changeX = -1
+        playerX += player_changeX
+
     if playerY >= 600:
         playerY = 600
 
@@ -207,6 +254,19 @@ while running:
     end_jump2 = collisionBranch2(branch2X, branch2Y, playerX, playerY)
     end_jump1 = collisionBranch1(branch1X, branch1Y, playerX, playerY)
 
+    # flies loop
+    for i in range(num_flies):
+        flies_targets(fliesX[i], fliesY[i], i)
+
+    # butteflies loop
+    for j in range(num_butterflies):
+        butterflies_targets(butterflyX[j], butterflyY[j], j)
+
+    # leaves loop
+    for h in range(num_leaves):
+        leave_targets(leaveX[h], leaveY[h], h)
+
+    # function called
     player_moves(playerX, playerY)
     branch1(branch1X, branch1Y)
     branch2(branch2X, branch2Y)

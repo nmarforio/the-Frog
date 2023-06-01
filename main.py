@@ -23,7 +23,7 @@ textFont = pygame.font.Font("freesansbold.ttf", 25)
 
 
 def showScore():
-    scoreText = textFont.render("score:" + str(score), True, (255, 255, 255))
+    scoreText = textFont.render("score: " + str(score), True, (255, 255, 255))
     wn.blit(scoreText, (10, 10))
 
 
